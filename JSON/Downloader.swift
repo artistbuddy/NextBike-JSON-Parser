@@ -9,13 +9,17 @@
 import Foundation
 
 class Downloader {
-    static func download(from url: URL) -> Data? {
+    let url: URL
+    var data: Data?
+    
+    init(url: URL) {
+        self.url = url
+        
         do {
-            let content = try Data(contentsOf: url)
-            return content
+            self.data = try Data(contentsOf: url)
         } catch {
+            //TODO: handle error
             print("Downloader could not download content")
-            return nil
         }
     }
 }

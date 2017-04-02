@@ -8,9 +8,12 @@
 
 import Foundation
 
-let stations = try CityBikesData().getStations(for: .wroclaw)
-
-for station in stations {
-    print(station)
+if let data = CityBikesData(for: .wroclaw) {
+    let wroclaw = CityBikesDataParser(data: data)
+    wroclaw.parse()
+    
+    for station in wroclaw.stations! {
+        print(station)
+    }
 }
 

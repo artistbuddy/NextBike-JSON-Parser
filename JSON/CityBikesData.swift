@@ -8,49 +8,46 @@
 
 import Foundation
 
-class CityBikesData {
-    private struct CityBikesURL {
+struct CityBikesData {
+    let json: JSONHelper
+    let city: CityBikesURL
+    
+    init?(for city: CityBikesURL) {
+        guard let json = JSONHelper(json: city.url) else {
+            return nil
+        }
+        
+        self.json = json
+        self.city = city
+    }
+    
+    enum CityBikesURL {
+        case opole, wroclaw
+        
+        var url: URL {
+            switch self {
+            case .opole: return CityBikesURL.makeURL("opole-bike")
+            case .wroclaw: return CityBikesURL.makeURL("wroclawski-rower-miejski")
+            }
+        }
+        
+        //MARK:- Config
         private static let tls = true
         private static let domain = "api.citybik.es"
         private static let version = "v2"
         
+        //MARK:- Helpers
         private static func makeURL(_ name: String) -> URL {
-            return URL(string: ((CityBikesURL.tls) ? "http" : "https") + "://" + CityBikesURL.domain + "/" + CityBikesURL.version + "/networks/" + name)!
-        }
-        
-        static func getURL(for city: AvailableCities) -> URL {
-            switch city {
-            case .opole: return makeURL("opole-bike")
-            case .wroclaw: return makeURL("wroclawski-rower-miejski")
-            }
-        }
-    }
-    
-    enum AvailableCities {
-        case wroclaw, opole
-    }
-    
-    func getStations(for city: AvailableCities) throws -> [Station] {
-        guard let rawData = Downloader.download(from: CityBikesURL.getURL(for: city)) else {
-            throw CityBikesDataError.downloadError
-        }
-        
-        guard let json = JSONHelper(json: rawData) else {
-            throw CityBikesDataError.notFoundJSON
-        }
-        
-        switch city {
-        case .wroclaw, .opole:
-            let parser = NextBikeParser(json: json)
-            try parser.parse()
-            return parser.data
+            return URL(string: ((CityBikesURL.tls) ? "https" : "http") + "://" + CityBikesURL.domain + "/" + CityBikesURL.version + "/networks/" + name)!
         }
     }
 }
 
-extension CityBikesData {
-    enum CityBikesDataError: Error {
-        case downloadError
-        case notFoundJSON
-    }
-}
+
+
+
+
+
+
+
+

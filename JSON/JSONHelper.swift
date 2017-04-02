@@ -17,11 +17,11 @@ class JSONHelper {
         self.rawData = data
     }
     
-//    convenience init?(json url: URL) {
-//        guard let data = Downloader.download(from: url) else {
-//            return nil
-//        }
-//        
-//        self.init(json: data)
-//    }
+    convenience init?(json url: URL) {
+        guard let data = Downloader(url: url).data else {
+            return nil
+        }
+        
+        self.init(json: data)
+    }
 }
